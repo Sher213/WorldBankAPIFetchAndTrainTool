@@ -360,7 +360,7 @@ if "selected_countries" not in st.session_state:
 if "data" not in st.session_state:
     st.session_state.data = pd.DataFrame()
 
-if "model" not in st.session_state:
+if "stats" not in st.session_state:
     st.session_state.stats = None
 
 if "feature_cols" not in st.session_state:
@@ -418,7 +418,7 @@ if st.button("Fetch Data for Selected Indicators"):
 # Step 2: Hypothesis Chatbot
 # ---------------------------
 if not st.session_state.data.empty:
-    st.subheader("🤖 Hypothesis Question Chatbot for Datasets")
+    st.subheader("🤖 Hypothesis Question for Model Training Chatbot Datasets")
     st.write("Columns in dataset:")
     st.write(st.session_state.data.columns.tolist())
 
@@ -459,13 +459,16 @@ if not st.session_state.data.empty:
         st.session_state.stats = model_pipeline(st.session_state.data, target_col, problem_type.lower(),
                        num_classes=st.session_state.data['country'].nunique())
         st.success("Model training complete!")
-    
+
+if st.session_state.stats:
     # Display metrics & plots
     display_model_stats(st.session_state.stats, problem_type.lower())
+
 # ---------------------------
 # Step 5: Dataset Visualizations
 # ---------------------------
 if not st.session_state.data.empty and st.session_state.stats:
+
     st.subheader("Dataset Visualizations")
 
     # Histogram for numeric columns
