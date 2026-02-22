@@ -1,6 +1,7 @@
 import numpy as np
 import requests
 import pandas as pd
+import time
 
 # This function translates user-friendly indicator names into World Bank API codes.
 def translate_indicators(user_fields: list[str]=["GDP (current US$)", "Population, total"]) -> list[str]:
@@ -146,6 +147,8 @@ def get_data_df(countries:list[str] = ["CA"], indicators: list[str] = ["NY.GDP.M
         for ind in indicators:
             url = f"{base_url}country/{c}/indicator/{ind}?date={date_range}&format=json"
 
+            time.sleep(1)  # Sleep for 2 seconds to avoid hitting API rate limits
+
             response = requests.get(url)
             print(url)
             if response.status_code == 200:
@@ -154,7 +157,6 @@ def get_data_df(countries:list[str] = ["CA"], indicators: list[str] = ["NY.GDP.M
                 print(f"Error: {response.status_code}")
                 return None
         
-        # Flatten relevant fields
         rows = []
         for obs in data:  # Skip the first element which contains metadata
             if len(obs) < 2:

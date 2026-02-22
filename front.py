@@ -361,7 +361,7 @@ if "data" not in st.session_state:
     st.session_state.data = pd.DataFrame()
 
 if "model" not in st.session_state:
-    st.session_state.stats = {}
+    st.session_state.stats = None
 
 if "feature_cols" not in st.session_state:
     st.session_state.feature_cols = []
@@ -465,7 +465,7 @@ if not st.session_state.data.empty:
 # ---------------------------
 # Step 5: Dataset Visualizations
 # ---------------------------
-if not st.session_state.data.empty:
+if not st.session_state.data.empty and st.session_state.stats:
     st.subheader("Dataset Visualizations")
 
     # Histogram for numeric columns
