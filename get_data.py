@@ -150,7 +150,7 @@ def get_data_df(countries:list[str] = ["CA"], indicators: list[str] = ["NY.GDP.M
             time.sleep(1)  # Sleep for 2 seconds to avoid hitting API rate limits
 
             response = requests.get(url)
-            print(url)
+            print(f"fetching url: {url}")
             if response.status_code == 200:
                 data.append(response.json())
             else:

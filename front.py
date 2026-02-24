@@ -316,12 +316,15 @@ def display_model_stats(stats, problem_type="regression"):
         st.pyplot(fig)
 
     else:  # classification
+        st.write("Classification Prediction")
+        st.write(stats['y_pred_test_original'][[0]])
+
         st.metric("Train Accuracy", round(stats['train_accuracy'], 3))
         st.metric("Test Accuracy", round(stats['test_accuracy'], 3))
 
         # Show classification report table
         st.write("Classification Report (Test Set)")
-        import pandas as pd
+
         report_df = pd.DataFrame(stats['classification_report']).transpose()
         st.dataframe(report_df)
 

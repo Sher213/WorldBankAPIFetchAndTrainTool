@@ -28,9 +28,12 @@ def model_pipeline(df: pd.DataFrame, target_col: str, problem: str = "regression
         le = LabelEncoder()
         X[col] = le.fit_transform(X[col].astype(str))
     
+    y_encoder = None
+    
     if problem == "classification":
         le = LabelEncoder()
         y = le.fit_transform(y.astype(str))
+        y_encoder = le
 
     # Scale features
     scaler = StandardScaler()
@@ -90,9 +93,9 @@ def model_pipeline(df: pd.DataFrame, target_col: str, problem: str = "regression
         from tensorflow.keras.models import load_model
         loaded_model = load_model("model.h5")
 
-    return return_model_stats(model, X_train, y_train, X_test, y_test, problem_type=problem, history=history if m == "neural network" else None)
+    return return_model_stats(model, X_train, y_train, X_test, y_test, problem_type=problem, history=history if m == "neural network" else None, y_encoder=y_encoder if m == "neural network" else None)
     
-def return_model_stats(model, X_train, y_train, X_test, y_test, problem_type="regression", history=None):
+def return_model_stats(model, X_train, y_train, X_test, y_test, problem_type="regression", history=None, y_encoder=None):
     stats = {}
 
     if problem_type == "regression":
@@ -115,6 +118,11 @@ def return_model_stats(model, X_train, y_train, X_test, y_test, problem_type="re
         stats['train_accuracy'] = accuracy_score(y_train, y_pred_train)
         stats['test_accuracy'] = accuracy_score(y_test, y_pred_test)
         stats['classification_report'] = classification_report(y_test, y_pred_test, output_dict=True)
+
+        if y_encoder is not None:
+            stats['y_test_original'] = y_encoder.inverse_transform(y_test)
+            stats['y_pred_test_original'] = y_encoder.inverse_transform(y_pred_test)
+            stats['class_labels'] = list(y_encoder.classes_)
 
         # Include loss/accuracy history if neural network
         if history:
